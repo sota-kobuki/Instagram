@@ -8,7 +8,7 @@ import FirebaseAuth
 import FirebaseFirestore
 
 protocol CommentViewControllerDelegate: AnyObject {
-    func didPostComment() // 変更点: デリゲートメソッドの追加
+    func didPostComment() 
 }
 
 class CommentViewController: UIViewController {
@@ -30,14 +30,21 @@ class CommentViewController: UIViewController {
             print("DEBUG_PRINT: postIdがnilです。")
             return
         }
+        
         guard let myId = Auth.auth().currentUser?.uid else {
             print("DEBUG_PRINT: ユーザーがログインしていません。")
+            return
+        }
+        
+        guard let myName = Auth.auth().currentUser?.displayName else {
+            print("DEBUG_PRINT: ユーザー名が取得できません")
             return
         }
 
         let comment = [
             "commentText": commentText,
             "commenterId": myId,
+            "commenterName": myName,
             "timestamp": FieldValue.serverTimestamp()
         ] as [String : Any]
 
@@ -50,6 +57,7 @@ class CommentViewController: UIViewController {
             print("DEBUG_PRINT: コメントを保存しました。")
             self.delegate?.didPostComment()
             self.dismiss(animated: true, completion: nil)
+        
         }
     }
     

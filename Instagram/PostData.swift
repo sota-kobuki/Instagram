@@ -1,12 +1,19 @@
-//
-//  PostData.swift
-//  Instagram
-//
-
 import Foundation
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
+
+class Comment {
+    var commentText: String
+    var commenterId: String
+    var commenterName: String
+    
+    init(commentText: String, commenterId: String, commenterName: String) {
+        self.commentText = commentText
+        self.commenterId = commenterId
+        self.commenterName = commenterName
+    }
+}
 
 class PostData: NSObject {
     var id = ""
@@ -15,7 +22,7 @@ class PostData: NSObject {
     var date = ""
     var likes: [String] = []
     var isLiked: Bool = false
-    var comments: [(String, String)] = []
+    var comments: [Comment] = []
     
     init(document: QueryDocumentSnapshot) {
         self.id = document.documentID
@@ -40,9 +47,7 @@ class PostData: NSObject {
         }
         
         if let myid = Auth.auth().currentUser?.uid {
-            // likesの配列の中にmyidが含まれているかチェックすることで、自分がいいねを押しているかを判断
-            if self.likes.firstIndex(of: myid) != nil {
-                // myidがあれば、いいねを押していると認識する。
+            if self.likes.contains(myid) {
                 self.isLiked = true
             }
         }
@@ -50,37 +55,55 @@ class PostData: NSObject {
     
     func fetchComments(completion: @escaping () -> Void) {
         let commentsCollection = Firestore.firestore().collection(Const.PostPath).document(self.id).collection("comments")
-        commentsCollection.getDocuments { (querySnapshot, error) in
+        commentsCollection.getDocuments { [weak self] (querySnapshot, error) in
+            guard let self = self else { return }
             if let error = error {
                 print("DEBUG_PRINT: コメントの取得が失敗しました。 \(error)")
                 return
             }
-            self.comments = querySnapshot?.documents.compactMap { commentDoc -> (String, String)? in
-                let commentData = commentDoc.data()
-                guard let commentText = commentData["commentText"] as? String,
-                      let commenterId = commentData["commenterId"] as? String else {
-                    return nil
-                }
-                var commenterName = "Unknown"
-                Firestore.firestore().collection("users").document(commenterId).getDocument { (userDoc, error) in
-                    if let error = error {
-                        print("DEBUG_PRINT: ユーザー名の取得が失敗しました。 \(error)")
-                        return
+            self.comments = []
+            if let querySnapshot = querySnapshot {
+                var commentCount = querySnapshot.documents.count
+                for commentDoc in querySnapshot.documents {
+                    let commentData = commentDoc.data()
+                    guard let commentText = commentData["commentText"] as? String,
+                          let commenterId = commentData["commenterId"] as? String else {
+                        commentCount -= 1
+                        continue
                     }
-                    if let userDic = userDoc?.data(),
-                       let userName = userDic["name"] as? String {
-                        commenterName = userName
+                    Firestore.firestore().collection("users").document(commenterId).getDocument { (userDoc, error) in
+                        if let error = error {
+                            print("DEBUG_PRINT: ユーザー名の取得が失敗しました。 \(error)")
+                            commentCount -= 1
+                            if commentCount == 0 {
+                                completion() // ユーザー名取得処理が全て完了したら通知
+                            }
+                            return
+                        }
+                        var commenterName = "Unknown"
+                        if let userDic = userDoc?.data(),
+                           let userName = userDic["name"] as? String {
+                            commenterName = userName
+                        }
+                        let newComment = Comment(commentText: commentText, commenterId: commenterId, commenterName: commenterName)
+                        self.comments.append(newComment)
+                        commentCount -= 1
+                        if commentCount == 0 {
+                            DispatchQueue.main.async {
+                                completion() // ユーザー名取得処理が全て完了したら通知
+                            }
+                        }
                     }
-                    self.comments.append((commentText, commenterName))
-                    completion() // Fetchが完了したことを通知
                 }
-                return nil // 一旦nilを返しておく
-            } ?? []
+            } else {
+                DispatchQueue.main.async {
+                    completion() // コメントがない場合も通知
+                }
+            }
         }
     }
     
     override var description: String {
         return "PostData: name=\(name); caption=\(caption); date=\(date); likes=\(likes.count); id=\(id);"
     }
-    
 }

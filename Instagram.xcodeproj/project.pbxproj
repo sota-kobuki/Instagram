@@ -24,8 +24,6 @@
 		9795B8F02C8EB01E005447E2 /* PostData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9795B8EF2C8EB01E005447E2 /* PostData.swift */; };
 		9795B8F92C8EB30A005447E2 /* PostTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9795B8F82C8EB30A005447E2 /* PostTableViewCell.xib */; };
 		9795B8FA2C8EB30A005447E2 /* PostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9795B8F72C8EB30A005447E2 /* PostTableViewCell.swift */; };
-		9795B8FF2C8EC47A005447E2 /* CommentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9795B8FE2C8EC47A005447E2 /* CommentTableViewCell.xib */; };
-		9795B9002C8EC47A005447E2 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9795B8FD2C8EC47A005447E2 /* CommentTableViewCell.swift */; };
 		9795B9022C8ECDE2005447E2 /* CommentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9795B9012C8ECDE2005447E2 /* CommentViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -51,8 +49,6 @@
 		9795B8EF2C8EB01E005447E2 /* PostData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostData.swift; sourceTree = "<group>"; };
 		9795B8F72C8EB30A005447E2 /* PostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
 		9795B8F82C8EB30A005447E2 /* PostTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PostTableViewCell.xib; sourceTree = "<group>"; };
-		9795B8FD2C8EC47A005447E2 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
-		9795B8FE2C8EC47A005447E2 /* CommentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CommentTableViewCell.xib; sourceTree = "<group>"; };
 		9795B9012C8ECDE2005447E2 /* CommentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -98,8 +94,6 @@
 				9795B8F72C8EB30A005447E2 /* PostTableViewCell.swift */,
 				9795B8F82C8EB30A005447E2 /* PostTableViewCell.xib */,
 				9795B8E32C884C91005447E2 /* ImageSelectViewController.swift */,
-				9795B8FD2C8EC47A005447E2 /* CommentTableViewCell.swift */,
-				9795B8FE2C8EC47A005447E2 /* CommentTableViewCell.xib */,
 				9795B8E52C884CA0005447E2 /* PostViewController.swift */,
 				9795B8E72C884CB2005447E2 /* SettingViewController.swift */,
 				9795B9012C8ECDE2005447E2 /* CommentViewController.swift */,
@@ -191,7 +185,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9795B8D52C884B68005447E2 /* Assets.xcassets in Resources */,
-				9795B8FF2C8EC47A005447E2 /* CommentTableViewCell.xib in Resources */,
 				9795B8EC2C885EC9005447E2 /* GoogleService-Info.plist in Resources */,
 				9795B8F92C8EB30A005447E2 /* PostTableViewCell.xib in Resources */,
 				9795B8D82C884B68005447E2 /* Base in Resources */,
@@ -256,7 +249,6 @@
 				9795B8E82C884CB2005447E2 /* SettingViewController.swift in Sources */,
 				9795B8F02C8EB01E005447E2 /* PostData.swift in Sources */,
 				9795B8E02C884C79005447E2 /* LoginViewController.swift in Sources */,
-				9795B9002C8EC47A005447E2 /* CommentTableViewCell.swift in Sources */,
 				9795B8CC2C884B66005447E2 /* AppDelegate.swift in Sources */,
 				9795B8CE2C884B66005447E2 /* SceneDelegate.swift in Sources */,
 				9795B8EE2C8EAC57005447E2 /* Const.swift in Sources */,
