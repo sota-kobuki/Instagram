@@ -59,8 +59,17 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // セルを取得してデータを設定する
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! PostTableViewCell
-        cell.setPostData(postArray[indexPath.row])
+        let postData = postArray[indexPath.row]
+        
+        cell.setPostData(postData)
+        cell.delegate = self
+        
         cell.likeButton.addTarget(self, action:#selector(handleLikeButton(_:)), for: .touchUpInside)
+        postData.fetchComments {
+            DispatchQueue.main.async {
+                cell.setPostData(postData) // 再度データを設定してコメントを更新
+            }
+        }
         return cell
     }
     
@@ -95,6 +104,13 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let commentVC = storyboard.instantiateViewController(withIdentifier: "CommentViewController") as! CommentViewController
         commentVC.postId = postId
+        commentVC.delegate = self
         self.present(commentVC, animated: true, completion: nil)
+    }
+}
+
+extension HomeViewController: CommentViewControllerDelegate {
+    func didPostComment() {
+        viewWillAppear(true) // 変更点: コメント投稿後にテーブルビューを更新
     }
 }

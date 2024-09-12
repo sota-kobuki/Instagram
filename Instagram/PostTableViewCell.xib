@@ -92,6 +92,7 @@
             <connections>
                 <outlet property="captionLabel" destination="EwL-0G-jXk" id="HwY-eu-AbT"/>
                 <outlet property="commentButton" destination="k32-f5-8gC" id="I18-Vq-YdI"/>
+                <outlet property="commentsTableView" destination="qRx-OD-dDF" id="CQ0-DB-bb3"/>
                 <outlet property="dateLabel" destination="2gc-NK-tXx" id="vcg-23-5DJ"/>
                 <outlet property="likeButton" destination="Sa8-YF-88b" id="TUT-lq-b3u"/>
                 <outlet property="likeLabel" destination="c3T-PV-bdA" id="zOq-xK-ryf"/>

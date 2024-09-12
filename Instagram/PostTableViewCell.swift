@@ -12,7 +12,19 @@ protocol PostTableViewCellDelegate: AnyObject {
 
 
 
-class PostTableViewCell: UITableViewCell {
+class PostTableViewCell: UITableViewCell, UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return postData?.comments.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CommentCell", for: indexPath) as! CommentTableViewCell
+        if let comment = postData?.comments[indexPath.row] {
+            cell.setCommentData(comment: comment) // 変更点: コメントデータの設定
+        }
+        return cell
+    }
+    
 
     @IBOutlet weak var postImageView: UIImageView!
     @IBOutlet weak var likeButton: UIButton!
@@ -21,6 +33,7 @@ class PostTableViewCell: UITableViewCell {
     @IBOutlet weak var likeLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var captionLabel: UILabel!
+    @IBOutlet weak var commentsTableView: UITableView!
     
     
     weak var delegate: PostTableViewCellDelegate?
@@ -29,9 +42,16 @@ class PostTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         commentButton.addTarget(self, action: #selector(commentButtonTapped), for: .touchUpInside)
+        
+        commentsTableView.delegate = self
+        commentsTableView.dataSource = self
+        let nib = UINib(nibName: "CommentTableViewCell", bundle: nil)
+        commentsTableView.register(nib, forCellReuseIdentifier: "CommentCell")
+        
     }
     
     func setPostData(_ postData: PostData) {
+        self.postData = postData
         // 画像の表示
         postImageView.sd_imageIndicator = SDWebImageActivityIndicator.gray
         let imageRef = Storage.storage().reference().child(Const.ImagePath).child(postData.id + ".jpg")
@@ -54,6 +74,8 @@ class PostTableViewCell: UITableViewCell {
             let buttonImage = UIImage(named: "like_none")
             self.likeButton.setImage(buttonImage, for: .normal)
         }
+        
+        commentsTableView.reloadData()
     }
     
     @objc private func commentButtonTapped() {
