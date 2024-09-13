@@ -49,6 +49,8 @@ class PostTableViewCell: UITableViewCell {
         let likeNumber = postData.likes.count
         likeLabel.text = "\(likeNumber)"
         
+        self.commentsLabel.text = ""
+        
         if postData.isLiked {
             let buttonImage = UIImage(named: "like_exist")
             self.likeButton.setImage(buttonImage, for: .normal)
@@ -65,8 +67,11 @@ class PostTableViewCell: UITableViewCell {
                 for comment in postData.comments {
                     commentsText += "\(comment.commenterName): \(comment.commentText)\n"
                 }
-                self.commentsLabel.text = commentsText
-                self.commentsLabel.sizeToFit()
+                if commentsText.isEmpty {
+                    self.commentsLabel.text = ""
+                } else {
+                    self.commentsLabel.text = commentsText
+                }
             }
         }
     }

@@ -45,7 +45,7 @@ class CommentViewController: UIViewController {
             "commentText": commentText,
             "commenterId": myId,
             "commenterName": myName,
-            "timestamp": FieldValue.serverTimestamp()
+            "date": FieldValue.serverTimestamp()
         ] as [String : Any]
 
         let postRef = Firestore.firestore().collection(Const.PostPath).document(postId)

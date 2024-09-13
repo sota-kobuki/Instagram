@@ -36,6 +36,8 @@ class LoginViewController: UIViewController {
                     return
                 }
                 print("DEBUG_PRINT: ログインに成功しました。")
+                
+                SVProgressHUD.dismiss()
                 // 画面を閉じてタブ画面に戻る
                 self.dismiss(animated: true, completion: nil)
             }

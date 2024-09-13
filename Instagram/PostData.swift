@@ -7,11 +7,13 @@ class Comment {
     var commentText: String
     var commenterId: String
     var commenterName: String
+    var commentTime: Date
     
-    init(commentText: String, commenterId: String, commenterName: String) {
+    init(commentText: String, commenterId: String, commenterName: String, commentTime: Date) {
         self.commentText = commentText
         self.commenterId = commenterId
         self.commenterName = commenterName
+        self.commentTime = commentTime
     }
 }
 
@@ -55,7 +57,8 @@ class PostData: NSObject {
     
     func fetchComments(completion: @escaping () -> Void) {
         let commentsCollection = Firestore.firestore().collection(Const.PostPath).document(self.id).collection("comments")
-        commentsCollection.getDocuments { [weak self] (querySnapshot, error) in
+        
+        commentsCollection.order(by:"date", descending: true).getDocuments { [weak self] (querySnapshot, error) in
             guard let self = self else { return }
             if let error = error {
                 print("DEBUG_PRINT: コメントの取得が失敗しました。 \(error)")
@@ -67,7 +70,10 @@ class PostData: NSObject {
                 for commentDoc in querySnapshot.documents {
                     let commentData = commentDoc.data()
                     guard let commentText = commentData["commentText"] as? String,
-                          let commenterId = commentData["commenterId"] as? String else {
+                          let commenterId = commentData["commenterId"] as? String,
+                          let commenterName = commentData["commenterName"] as? String,
+                          let commentDate = commentData["date"] as? Timestamp
+                    else {
                         commentCount -= 1
                         continue
                     }
@@ -80,16 +86,13 @@ class PostData: NSObject {
                             }
                             return
                         }
-                        var commenterName = "Unknown"
-                        if let userDic = userDoc?.data(),
-                           let userName = userDic["name"] as? String {
-                            commenterName = userName
-                        }
-                        let newComment = Comment(commentText: commentText, commenterId: commenterId, commenterName: commenterName)
+                        let commentDate = commentData["date"] as? Timestamp
+                        let newComment = Comment(commentText: commentText, commenterId: commenterId, commenterName: commenterName, commentTime: commentDate!.dateValue())
                         self.comments.append(newComment)
                         commentCount -= 1
                         if commentCount == 0 {
                             DispatchQueue.main.async {
+                                self.comments.sort { $0.commentTime > $1.commentTime }
                                 completion() // ユーザー名取得処理が全て完了したら通知
                             }
                         }
