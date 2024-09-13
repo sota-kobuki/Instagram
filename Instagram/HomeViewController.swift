@@ -71,11 +71,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.delegate = self
         
         cell.likeButton.addTarget(self, action:#selector(handleLikeButton(_:)), for: .touchUpInside)
-        postData.fetchComments {
-            DispatchQueue.main.async {
-                cell.setPostData(postData) // 再度データを設定してコメントを更新
-            }
-        }
         return cell
     }
     

@@ -59,20 +59,14 @@ class PostTableViewCell: UITableViewCell {
             self.likeButton.setImage(buttonImage, for: .normal)
         }
         
-        // コメントデータの表示
-        postData.fetchComments {
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                var commentsText = ""
-                for comment in postData.comments {
-                    commentsText += "\(comment.commenterName): \(comment.commentText)\n"
-                }
-                if commentsText.isEmpty {
-                    self.commentsLabel.text = ""
-                } else {
-                    self.commentsLabel.text = commentsText
-                }
-            }
+        var commentsText = ""
+        for comment in postData.comments {
+            commentsText += "\(comment.commenterName): \(comment.commentText)\n"
+        }
+        if commentsText.isEmpty {
+            self.commentsLabel.text = ""
+        } else {
+            self.commentsLabel.text = commentsText
         }
     }
     @objc private func commentButtonTapped() {

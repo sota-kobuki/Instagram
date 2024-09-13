@@ -58,7 +58,7 @@ class PostData: NSObject {
     func fetchComments(completion: @escaping () -> Void) {
         let commentsCollection = Firestore.firestore().collection(Const.PostPath).document(self.id).collection("comments")
         
-        commentsCollection.order(by:"date", descending: true).getDocuments { [weak self] (querySnapshot, error) in
+        commentsCollection.order(by:"date", descending: false).getDocuments { [weak self] (querySnapshot, error) in
             guard let self = self else { return }
             if let error = error {
                 print("DEBUG_PRINT: コメントの取得が失敗しました。 \(error)")
@@ -71,8 +71,7 @@ class PostData: NSObject {
                     let commentData = commentDoc.data()
                     guard let commentText = commentData["commentText"] as? String,
                           let commenterId = commentData["commenterId"] as? String,
-                          let commenterName = commentData["commenterName"] as? String,
-                          let commentDate = commentData["date"] as? Timestamp
+                          let commenterName = commentData["commenterName"] as? String
                     else {
                         commentCount -= 1
                         continue
@@ -82,7 +81,7 @@ class PostData: NSObject {
                             print("DEBUG_PRINT: ユーザー名の取得が失敗しました。 \(error)")
                             commentCount -= 1
                             if commentCount == 0 {
-                                completion() // ユーザー名取得処理が全て完了したら通知
+                                completion()
                             }
                             return
                         }
@@ -92,7 +91,6 @@ class PostData: NSObject {
                         commentCount -= 1
                         if commentCount == 0 {
                             DispatchQueue.main.async {
-                                self.comments.sort { $0.commentTime > $1.commentTime }
                                 completion() // ユーザー名取得処理が全て完了したら通知
                             }
                         }
